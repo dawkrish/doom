@@ -60,7 +60,7 @@
   (setq doom-modeline-major-mode-icon t)
   (setq doom-modeline-total-line-number t))
 
-
+(setq projectile-git-command "fd . -0 --type f --hidden --color=never")
 ;; (setq lsp-lens-enable t)
 ;; (setq lsp-headerline-breadcrumb-enable t)
 ;; (setq lsp-ui-sideline-enable t)
