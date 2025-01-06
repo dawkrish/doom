@@ -34,12 +34,11 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'wombat)
+(setq doom-theme 'doom-solarized-dark)
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
+;;(add-hook 'window-setup-hook 'toggle-frame-fullscreen t)
 (after! persp-mode
   (setq persp-emacsclient-init-frame-behaviour-override "main"))
-
-
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -49,7 +48,18 @@
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/org/")
-(setq projectile-project-search-path '("~/Documents/projects"))
+(setq projectile-project-search-path '(("~/Documents/projects" . 1)
+                                       ("~/Documents/work" . 1)))
+
+
+(setq projectile-auto-discover t)
+
+;; Modeline
+;; - add major mode icon
+(after! doom-modeline
+  (setq doom-modeline-major-mode-icon t)
+  (setq doom-modeline-total-line-number t))
+
 
 ;; (setq lsp-lens-enable t)
 ;; (setq lsp-headerline-breadcrumb-enable t)
