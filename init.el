@@ -1,188 +1,207 @@
-;;; init.el -*- lexical-binding: t; -*-
-
-;; This file controls what Doom modules are enabled and what order they load
-;; in. Remember to run 'doom sync' after modifying it!
-
-;; NOTE Press 'SPC h d h' (or 'C-h d h' for non-vim users) to access Doom's
-;;      documentation. There you'll find a link to Doom's Module Index where all
-;;      of our modules are listed, including what flags they support.
-
-;; NOTE Move your cursor over a module's name (or its flags) and press 'K' (or
-;;      'C-c c k' for non-vim users) to view its documentation. This works on
-;;      flags as well (those symbols that start with a plus).
+;;; init.el --- Doom Emacs Module Configuration -*- lexical-binding: t; -*-
 ;;
-;;      Alternatively, press 'gd' (or 'C-c c d') on a module to browse its
-;;      directory (for easy access to its source code).
+;; This file controls which Doom modules are enabled and what order they load in.
+;; Each module is a bundle of packages + configuration for a specific feature.
+;; Run `doom sync` after changing this file!
+;;
+;; TIP: Press 'SPC h d h' to access Doom's documentation.
+;;      Press 'K' on a module name to view its docs.
+;;      Press 'gd' on a module to browse its source code.
 
 (doom! :input
-       ;;bidi              ; (tfel ot) thgir etirw uoy gnipleh
-       ;;chinese
-       ;;japanese
-       ;;layout            ; auie,ctsrnm is the superior home row
+       ;; No input methods needed — add `chinese`, `japanese`, etc. if needed
 
        :completion
-       ;;company           ; the ultimate code completion backend
-       (corfu +orderless + icons)  ; complete with cap(f), cape and a flying feather!
-       ;;helm              ; the *other* search engine for love and life
-       ;;ido               ; the other *other* search engine...
-       ;;ivy               ; a search engine for love and life
-       (vertico + icons)           ; the search engine of the future
+       ;; `company` = auto-completion popup as you type (like VS Code intellisense)
+       ;; `corfu` is a newer alternative — using it here for better integration with eglot
+       (corfu +orderless +icons)
+       ;; `vertico` = fuzzy search for files, commands, buffers, etc.
+       ;; Think of it like Ctrl+P / Cmd+P in VS Code — press SPC to start
+       (vertico +icons)
 
        :ui
-       ;;deft              ; notational velocity for Emacs
-       doom              ; what makes DOOM look the way it does
-       doom-dashboard    ; a nifty splash screen for Emacs
-       ;;doom-quit         ; DOOM quit-message prompts when you quit Emacs
-       ;;(emoji +unicode)  ; 🙂
-       hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
-       ;;indent-guides     ; highlighted indent columns
-       ;;ligatures         ; ligatures and symbols to make your code pretty again
-       ;;minimap           ; show a map of the code on the side
-       (modeline + light)          ; snazzy, Atom-inspired modeline, plus API
-       ;;nav-flash         ; blink cursor line after big motions
-       ;;neotree           ; a project drawer, like NERDTree for vim
-       ;;ophints           ; highlight the region an operation acts on
-       (popup +defaults)   ; tame sudden yet inevitable temporary windows
-       ;;tabs              ; a tab bar for Emacs
-       (treemacs + lsp)          ; a project drawer, like neotree but cooler
-       ;;unicode           ; extended unicode support for various languages
-       (vc-gutter +pretty) ; vcs diff in the fringe
-       vi-tilde-fringe   ; fringe tildes to mark beyond EOB
-       ;;window-select     ; visually switch windows
-       workspaces        ; tab emulation, persistence & separate workspaces
-       ;;zen               ; distraction-free coding or writing
+       ;; `doom` = the Doom look: theme engine, modeline style, etc.
+       doom
+       ;; `dashboard` = startup screen with recent files and shortcuts
+       dashboard
+       ;; `doom-quit` = fun quit messages when you try to leave Emacs
+       doom-quit
+       ;; `emoji` = emoji picker and unicode support (SPC i e)
+       (emoji +unicode)
+       ;; `hl-todo` = highlight TODO/FIXME/HACK/NOTE keywords in comments
+       hl-todo
+       ;; `indent-guides` = show vertical lines at indent levels (like VS Code)
+       indent-guides
+       ;; `ligatures` = display font ligatures (e.g., -> becomes →) if your font supports them
+       ;; DISABLED: can cause input lag on macOS — re-enable if you have a ligature font
+       ;; ligatures
+       ;; `modeline` = the status bar at the bottom (shows file, git branch, errors, etc.)
+       modeline
+       ;; `ophints` = briefly flash the region you just operated on (yank, paste, etc.)
+       ophints
+       ;; `popup` = smart popup window management (help, compilation, etc.)
+       (popup +defaults)
+       ;; `treemacs` = sidebar file explorer (like VS Code's explorer panel)
+       ;; Toggle with SPC o p
+       treemacs
+       ;; `vc-gutter` = show git diff markers in the left gutter (+/~/-)
+       (vc-gutter +pretty)
+       ;; `vi-tilde-fringe` = show ~ on empty lines beyond end of file (like Vim)
+       vi-tilde-fringe
+       ;; `window-select` = quickly jump between windows (SPC w w)
+       window-select
+       ;; `workspaces` = tab-like workspaces per project (SPC TAB)
+       workspaces
 
        :editor
-       (evil +everywhere); come to the dark side, we have cookies
-       ;;file-templates    ; auto-snippets for empty files
-       fold              ; (nigh) universal code folding
-       (format + onsave +  lsp)  ; automated prettiness
-       ;;god               ; run Emacs commands without modifier keys
-       ;;lispy             ; vim for lisp, for people who don't like vim
-       ;;multiple-cursors  ; editing in many places at once
-       ;;objed             ; text object editing for the innocent
-       ;;parinfer          ; turn lisp into python, sort of
-       ;;rotate-text       ; cycle region at point between text candidates
-       snippets          ; my elves. They type so I don't have to
-       ;;word-wrap         ; soft wrapping with language-aware indent
+       ;; `evil` = Vim keybindings everywhere — this is your core editing experience
+       ;; +everywhere makes evil work in all buffers including help, magit, etc.
+       (evil +everywhere)
+       ;; `file-templates` = auto-insert boilerplate when creating new files
+       file-templates
+       ;; `fold` = code folding with za (toggle), zc (close), zo (open)
+       fold
+       ;; `format` = auto-format code on save using language-specific formatters
+       (format +onsave)
+       ;; `snippets` = expand abbreviations into code templates (e.g., fn<TAB>)
+       snippets
+       ;; `whitespace` = auto-detect indent style, trim trailing whitespace on save
+       (whitespace +guess +trim)
+       ;; `word-wrap` = soft wrap long lines with language-aware indentation
+       word-wrap
 
        :emacs
-       dired             ; making dired pretty [functional]
-       electric          ; smarter, keyword-based electric-indent
-       ;;eww               ; the internet is gross
-       ;;ibuffer           ; interactive buffer management
-       undo              ; persistent, smarter undo for your inevitable mistakes
-       vc                ; version-control and Emacs, sitting in a tree
+       ;; `dired` = built-in file manager — navigate your filesystem like a buffer
+       ;; +icons adds file type icons
+       (dired +icons)
+       ;; `electric` = auto-close brackets, auto-indent, smart delimiters
+       electric
+       ;; `tramp` = edit remote files over SSH as if they were local
+       tramp
+       ;; `undo` = persistent undo history (survives Emacs restart)
+       ;; +tree gives you a visual undo tree (SPC o u or C-x u)
+       (undo +tree)
+       ;; `vc` = base version control integration (foundation for magit)
+       vc
 
        :term
-       ;;eshell            ; the elisp shell that works everywhere
-       ;;shell             ; simple shell REPL for Emacs
-       ;;term              ; basic terminal emulator for Emacs
-       vterm             ; the best terminal emulation in Emacs
+       ;; `vterm` = full terminal emulator inside Emacs
+       ;; Open with SPC o t — this is where you'll run Claude Code, builds, etc.
+       ;; Vim bindings work here: press ESC to enter normal mode in the terminal
+       vterm
 
        :checkers
-       syntax              ; tasing you for every semicolon you forget
-       (spell +flyspell) ; tasing you for misspelling mispelling
-       ;;grammar           ; tasing grammar mistake every you make
+       ;; `syntax` = real-time error/warning checking (squiggly underlines)
+       ;; Works with eglot to show LSP diagnostics
+       syntax
+       ;; `spell` = spell checking in comments, strings, org, markdown
+       (spell +flyspell)
 
        :tools
-       ;;ansible
-       ;;biblio            ; Writes a PhD for you (citation needed)
-       ;;collab            ; buffers with friends
-       ;;debugger          ; FIXME stepping through code, to help you add bugs
-       ;;direnv
-       ;;docker
-       ;;editorconfig      ; let someone else argue about tabs vs spaces
-       ;;ein               ; tame Jupyter notebooks with emacs
-       (eval +overlay)     ; run code, run (also, repls)
-       lookup              ; navigate your code and its documentation
-       (lsp)               ; M-x vscode
-       magit             ; a git porcelain for Emacs
-       ;;make              ; run make tasks from Emacs
-       ;;pass              ; password manager for nerds
-       ;;pdf               ; pdf enhancements
-       ;;prodigy           ; FIXME managing external services & code builders
-       ;;terraform         ; infrastructure as code
-       ;;tmux              ; an API for interacting with tmux
-       tree-sitter       ; syntax and parsing, sitting in a tree...
-       ;;upload            ; map local to remote projects via ssh/ftp
+       ;; `direnv` = auto-load .envrc environment variables per-project
+       direnv
+       ;; `editorconfig` = respect .editorconfig files for indent style, tab width, etc.
+       editorconfig
+       ;; `eval` = run code and see results inline (SPC c e)
+       (eval +overlay)
+       ;; `lookup` = jump to definition (gd), references (gr), documentation (K)
+       ;; +dictionary for word definitions, +docsets for Dash.app offline docs
+       (lookup +dictionary +docsets)
+       ;; `lsp` = Language Server Protocol for IDE features
+       ;; +eglot uses the built-in eglot client (lighter/faster than lsp-mode)
+       ;; This gives you: completions, go-to-definition, find references,
+       ;; rename symbol, code actions, hover docs, etc.
+       (lsp +eglot)
+       ;; `magit` = the best Git interface — open with SPC g g
+       ;; +forge adds GitHub/GitLab integration (PRs, issues, code review)
+       ;; Open forge with SPC g ' or @ in magit status buffer
+       (magit +forge)
+       ;; `pdf` = view PDFs inside Emacs with annotations
+       pdf
+       ;; `rgb` = preview hex colors inline (#ff0000 shows red background)
+       rgb
+       ;; `tree-sitter` = fast incremental parsing for better syntax highlighting
+       ;; Emacs 30+ has built-in treesit support; Doom's module handles grammar install
+       tree-sitter
 
        :os
-       (:if (featurep :system 'macos) macos)  ; improve compatibility with macOS
-       ;;tty               ; improve the terminal Emacs experience
+       ;; macOS-specific tweaks (clipboard integration, modifier keys, etc.)
+       (:if (featurep :system 'macos) macos)
 
        :lang
-       ;;agda              ; types of types of types of types...
-       ;;beancount         ; mind the GAAP
-       ;;(cc +lsp)         ; C > C++ == 1
-       (clojure + lsp + tree-sitter)           ; java with a lisp
-       ;;common-lisp       ; if you've seen one lisp, you've seen them all
-       ;;coq               ; proofs-as-programs
-       ;;crystal           ; ruby at the speed of c
-       ;;csharp            ; unity, .NET, and mono shenanigans
-       ;;data              ; config/data formats
-       ;;(dart +flutter)   ; paint ui and not much else
-       ;;dhall
-       ;;(elixir + lsp + tree-sitter)            ; erlang done right
-       ;;elm               ; care for a cup of TEA?
-       emacs-lisp        ; drown in parentheses
-       ;;erlang            ; an elegant language for a more civilized age
-       ;;ess               ; emacs speaks statistics
-       ;;factor
-       ;;faust             ; dsp, but you get to keep your soul
-       ;;fortran           ; in FORTRAN, GOD is REAL (unless declared INTEGER)
-       ;;fsharp            ; ML stands for Microsoft's Language
-       ;;fstar             ; (dependent) types and (monadic) effects and Z3
-       ;;gdscript          ; the language you waited for
-       (go +lsp + tree-sitter)         ; the hipster dialect
-       ;;(graphql +lsp)    ; Give queries a REST
-       (haskell +lsp + tree-sitter)    ; a language that's lazier than I am
-       ;;hy                ; readability of scheme w/ speed of python
-       ;;idris             ; a language you can depend on
-       ;;json              ; At least it ain't XML
-       ;;(java +lsp)       ; the poster child for carpal tunnel syndrome
-       (javascript + lsp + tree-sitter)        ; all(hope(abandon(ye(who(enter(here))))))
-       ;;julia             ; a better, faster MATLAB
-       ;;kotlin            ; a better, slicker Java(Script)
-       ;;latex             ; writing papers in Emacs has never been so fun
-       ;;lean              ; for folks with too much to prove
-       ;;ledger            ; be audit you can be
-       ;;lua               ; one-based indices? one-based indices
-       markdown          ; writing docs for people to ignore
-       ;;nim               ; python + lisp at the speed of c
-       ;;nix               ; I hereby declare "nix geht mehr!"
-       ;;ocaml             ; an objective camel
-       org               ; organize your plain life in plain text
-       ;;php               ; perl's insecure younger brother
-       ;;plantuml          ; diagrams for confusing people more
-       ;;graphviz          ; diagrams for confusing yourself even more
-       ;;purescript        ; javascript, but functional
-       ;;python            ; beautiful is better than ugly
-       ;;qt                ; the 'cutest' gui framework ever
-       ;;racket            ; a DSL for DSLs
-       ;;raku              ; the artist formerly known as perl6
-       ;;rest              ; Emacs as a REST client
-       ;;rst               ; ReST in peace
-       ;;(ruby +rails)     ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
-       ;;(rust +lsp)       ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
-       ;;scala             ; java, but good
-       ;;(scheme +guile)   ; a fully conniving family of lisps
-       sh                ; she sells {ba,z,fi}sh shells on the C xor
-       ;;sml
-       ;;solidity          ; do you need a blockchain? No.
-       ;;swift             ; who asked for emoji variables?
+       ;; --- Languages you work with ---
 
-       ;;(mu4e +org +gmail)
-       ;;notmuch
-       ;;(wanderlust +gmail)
+       ;; `clojure` = Clojure/ClojureScript development
+       ;; +lsp enables clojure-lsp for IDE features
+       ;; +tree-sitter for syntax highlighting
+       ;; CIDER (the Clojure REPL) is included automatically — it's the heart of
+       ;; Clojure development in Emacs. You evaluate code directly in your editor.
+       (clojure +lsp +tree-sitter)
 
-       :app
-       ;;calendar
-       ;;emms
-       ;;everywhere        ; *leave* Emacs!? You must be joking
-       ;;irc               ; how neckbeards socialize
-       ;;(rss +org)        ; emacs as an RSS reader
+       ;; `emacs-lisp` = for editing your Doom config and Emacs packages
+       emacs-lisp
+
+       ;; `go` = Go development
+       ;; +lsp enables gopls (Go language server) for completions, diagnostics, etc.
+       ;; +tree-sitter for fast, accurate syntax highlighting
+       ;; Make sure `gopls` is installed: go install golang.org/x/tools/gopls@latest
+       (go +lsp +tree-sitter)
+
+       ;; `haskell` = Haskell development
+       ;; +lsp enables HLS (Haskell Language Server) — install via ghcup
+       ;; +tree-sitter for syntax highlighting
+       (haskell +lsp +tree-sitter)
+
+       ;; `javascript` = JavaScript and TypeScript
+       ;; +lsp enables typescript-language-server for both JS and TS
+       ;; +tree-sitter for syntax highlighting
+       ;; Install LSP: npm i -g typescript-language-server typescript
+       (javascript +lsp +tree-sitter)
+
+       ;; `json` = JSON editing with validation
+       ;; +lsp enables vscode-json-languageserver
+       ;; +tree-sitter for syntax highlighting
+       (json +lsp +tree-sitter)
+
+       ;; `markdown` = Markdown editing with preview (SPC m p)
+       markdown
+
+       ;; `org` = Org mode — notes, TODOs, agenda, and much more
+       ;; Your org files live in ~/org/ (configurable in config.el)
+       ;; Start simple: create a file.org, use * for headings, - for lists
+       ;; SPC m t = toggle TODO, SPC m d = set deadline, SPC o a = agenda view
+       (org +tree-sitter)
+
+       ;; `rust` = Rust development
+       ;; +lsp enables rust-analyzer for completions, diagnostics, etc.
+       ;; +tree-sitter for syntax highlighting
+       ;; Make sure rust-analyzer is installed: rustup component add rust-analyzer
+       (rust +lsp +tree-sitter)
+
+       ;; `sh` = Shell scripts (bash, zsh, fish)
+       ;; +lsp enables bash-language-server
+       ;; +tree-sitter for syntax highlighting
+       (sh +lsp +tree-sitter)
+
+       ;; `web` = HTML/CSS/templating
+       ;; +lsp enables vscode-html-languageserver and css-languageserver
+       ;; +tree-sitter for syntax highlighting
+       (web +lsp +tree-sitter)
+
+       ;; `yaml` = YAML editing with schema validation
+       ;; +lsp enables yaml-language-server
+       ;; +tree-sitter for syntax highlighting
+       (yaml +lsp +tree-sitter)
+
+       ;; `elm` = Elm development
+       ;; +lsp enables elm-language-server
+       ;; +tree-sitter for syntax highlighting
+       ;; Install LSP: npm i -g @elm-tooling/elm-language-server
+       (elm +lsp +tree-sitter)
+
+       ;; `data` = support for CSV, TSV, and other data formats
+       data
 
        :config
-       ;;literate
+       ;; Doom's sensible defaults + SPC-leader keybindings + auto-matching parens
        (default +bindings +smartparens))
