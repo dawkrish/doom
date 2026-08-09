@@ -1,113 +1,235 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
-
-;; Place your private configuration here! Remember, you do not need to run 'doom
-;; sync' after modifying this file!
-
-
-;; Some functionality uses this to identify you, e.g. GPG configuration, email
-;; clients, file templates and snippets. It is optional.
-;; (setq user-full-name "John Doe"
-;;       user-mail-address "john@doe.com")
-
-;; Doom exposes five (optional) variables for controlling fonts in Doom:
 ;;
-;; - `doom-font' -- the primary font to use
-;; - `doom-variable-pitch-font' -- a non-monospace font (where applicable)
-;; - `doom-big-font' -- used for `doom-big-font-mode'; use this for
-;;   presentations or streaming.
-;; - `doom-symbol-font' -- for symbols
-;; - `doom-serif-font' -- for the `fixed-pitch-serif' face
+;; This is your personal configuration file. Unlike init.el, you do NOT need
+;; to run `doom sync` after changing this file — just restart Emacs or
+;; press SPC h r r (doom/reload).
 ;;
-;; See 'C-h v doom-font' for documentation and more examples of what they
-;; accept. For example:
+;; TIP: Use `after!' to configure packages after they load.
+;;      Use `map!' to define custom keybindings.
+;;      Use `setq' to set variables.
+
+;; ============================================================================
+;; IDENTITY
+;; ============================================================================
+;; Used by GPG, email clients, git forge, and file templates
+(setq user-full-name "Krishnansh Agarwal"
+      user-mail-address "krishnansh710@gmail.com")
+
+;; ============================================================================
+;; FONTS
+;; ============================================================================
+;; `doom-font` = your main coding font (monospace)
+;; `doom-variable-pitch-font` = used in org-mode prose, markdown, etc.
+;; `doom-big-font` = for presentations/streaming (toggle with SPC t b)
 ;;
-;;(setq doom-font (font-spec :family "Fira Code" :size 12 :weight 'semi-light)
-;;      doom-variable-pitch-font (font-spec :family "Fira Sans" :size 13))
+;; TIP: Run M-x describe-font to see available fonts on your system
+;;      Run M-x doom/reload-font after changes
+(setq doom-font (font-spec :family "PT Mono" :size 16 :weight 'regular)
+      doom-variable-pitch-font (font-spec :family "PT Mono" :size 17))
+
+;; ============================================================================
+;; THEME & APPEARANCE
+;; ============================================================================
+;; Catppuccin theme — flavors: 'latte (light), 'frappe, 'macchiato, 'mocha (darkest)
+(setq doom-theme 'catppuccin)
+(setq catppuccin-flavor 'macchiato)
+
+;; Line numbers: t = absolute, 'relative = vim-style relative, nil = off
+;; Relative line numbers are great with evil — use 5j to jump 5 lines down
+(setq display-line-numbers-type 'relative)
+
+;; Start Emacs fullscreen
+(add-hook 'window-setup-hook #'toggle-frame-fullscreen t)
+
+;; ============================================================================
+;; ORG MODE
+;; ============================================================================
+;; Where your org files live — create this directory if it doesn't exist
+;; Org is a powerful plain-text system for notes, TODOs, and more.
 ;;
-(add-hook 'window-setup-hook 'toggle-frame-fullscreen t)
-(setq doom-font (font-spec :family "Monaspace Xenon" :size 17))
-;;
-;; If you or Emacs can't find your font, use 'M-x describe-font' to look them
-;; up, `M-x eval-region' to execute elisp code, and 'M-x doom/reload-font' to
-;; refresh your font settings. If Emacs still can't find your font, it likely
-;; wasn't installed correctly. Font issues are rarely Doom issues!
-
-;; There are two ways to load a theme. Both assume the theme is installed and
-;; available. You can either set `doom-theme' or manually load a theme with the
-;; `load-theme' function. This is the default:
-
-(setq doom-theme 'doom-gruvbox)
-
-;; This determines the style of line numbers in effect. If set to `nil', line
-;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type t)
-
-;; If you use `org' and don't want your org files in the default location below,
-;; change `org-directory'. It must be set before org loads!
+;; Quick start:
+;;   1. Create ~/org/todo.org
+;;   2. Use * for headings (** for sub-headings)
+;;   3. Type TODO before a heading to make it a task: * TODO Buy groceries
+;;   4. SPC m t = cycle TODO states (TODO -> DONE)
+;;   5. SPC o a = open agenda (shows your scheduled tasks)
+;;   6. SPC m d = add a deadline or schedule date
 (setq org-directory "~/org/")
-(setq projectile-project-search-path '(("~/Documents/projects" . 1)
-                                       ("~/Documents/work" . 1)))
-(setq projectile-auto-discover t)
 
+;; ============================================================================
+;; EGLOT (LSP)
+;; ============================================================================
+;; Eglot is the built-in LSP client. It connects to language servers to give
+;; you IDE features: completions, diagnostics, go-to-definition, etc.
+;;
+;; Key bindings (in any code buffer with LSP active):
+;;   gd        = go to definition
+;;   gr        = find references
+;;   K         = show hover documentation
+;;   SPC c a   = code actions (quick fixes, refactors)
+;;   SPC c r   = rename symbol across project
+;;   SPC c f   = format buffer
 
-(after! cider
-  (set-popup-rules!
-    '(("^\\*cider-repl"
-       :side right
-       :size 0.5
-       :quit nil
-       :ttl nil))))
+;; Don't spam the minibuffer with LSP progress messages
+(after! eglot
+  (setq eglot-events-buffer-config '(:size 0))
+  ;; Disable eglot logging for performance (enable for debugging LSP issues)
+  ;; To debug: set size to 2000000 and check *EGLOT events* buffer
+  )
 
-(plist-put +popup-defaults :modeline t)
-(remove-hook '+popup-buffer-mode-hook #'+popup-set-modeline-on-enable-h)
+;; ============================================================================
+;; MAGIT & FORGE
+;; ============================================================================
+;; Magit is a Git porcelain — the best way to use Git.
+;;
+;; Key bindings:
+;;   SPC g g   = open magit status (your main Git dashboard)
+;;   SPC g b   = blame current file
+;;   SPC g l   = git log
+;;
+;; In magit status buffer:
+;;   s         = stage file/hunk
+;;   u         = unstage
+;;   c c       = commit (write message, then C-c C-c to confirm)
+;;   P p       = push
+;;   F p       = pull
+;;   b c       = create branch
+;;   b b       = switch branch
+;;
+;; Forge (GitHub/GitLab integration):
+;;   @ or '    = open forge menu in magit
+;;   SPC g '   = forge dispatch
+;;   You need a GitHub token: create one at github.com/settings/tokens
+;;   Then add to ~/.authinfo: machine api.github.com login YOUR_USERNAME^forge password YOUR_TOKEN
 
+;; ============================================================================
+;; VTERM (TERMINAL)
+;; ============================================================================
+;; Full terminal emulator inside Emacs — great for running Claude Code.
+;;
+;; Key bindings:
+;;   SPC o t   = open vterm in current project
+;;   SPC o T   = open vterm in current directory
+;;
+;; Inside vterm:
+;;   Press ESC or C-\ to toggle between terminal insert and evil normal mode
+;;   In normal mode, you can use vim motions to scroll/copy text
+;;   Press i or a to go back to terminal insert mode
+(after! vterm
+  ;; Increase scrollback buffer (default is 1000 lines)
+  (setq vterm-max-scrollback 10000)
+  ;; Set shell to zsh
+  (setq vterm-shell "/bin/zsh"))
 
-(add-hook 'js-mode-hook #'lsp)
-(add-hook 'clojure-mode #'lsp)
+;; ============================================================================
+;; TREEMACS (FILE EXPLORER)
+;; ============================================================================
+;; Sidebar file tree like VS Code's explorer.
+;;
+;; Key bindings:
+;;   SPC o p   = toggle treemacs sidebar
+;;   SPC o P   = focus treemacs (if already open)
+;;
+;; Inside treemacs:
+;;   RET       = open file
+;;   o         = open file in other window
+;;   cf        = create file
+;;   cd        = create directory
+;;   R         = rename
+;;   d         = delete
+;;   q         = quit treemacs
 
-(use-package! apheleia
-  :config
-  (setf (alist-get 'standard apheleia-formatters)
-        '("standard" "--fix" "--stdin"))
-  (add-to-list 'apheleia-mode-alist '(js-mode . standard))
-  (add-to-list 'apheleia-mode-alist '(typescript-mode . standard)))
+;; ============================================================================
+;; TREE-SITTER
+;; ============================================================================
+;; Tree-sitter provides fast, accurate syntax highlighting and code navigation.
+;; Your Emacs 31 was compiled with tree-sitter support.
+;; Doom auto-installs grammar files for enabled languages.
 
+;; ============================================================================
+;; AI INTEGRATION (gptel)
+;; ============================================================================
+;; gptel lets you chat with Claude/ChatGPT directly inside Emacs.
+;; Configure it in config.el after installing (see packages.el).
+;;
+;; Key bindings (defined below):
+;;   SPC a a   = open gptel chat buffer
+;;   SPC a s   = send region/buffer to AI
+;;   SPC a m   = select AI model
+;;
+;; Usage:
+;;   1. SPC a a opens a chat buffer — type your question and press C-c RET to send
+;;   2. Select code, then SPC a s to send it with a prompt
+;;   3. Responses stream in real-time
 
+(after! gptel
+  ;; Set Claude as the default backend
+  ;; You need an API key: export ANTHROPIC_API_KEY="sk-..." in your shell
+  ;; Or set it here (not recommended for security):
+  ;; (setq gptel-api-key "sk-...")
+  (setq gptel-model 'claude-sonnet-5-20250601
+        gptel-backend (gptel-make-anthropic "Claude"
+                        :stream t
+                        :models '(claude-sonnet-5-20250601
+                                  claude-opus-5-20250601
+                                  claude-haiku-4-5-20251001))))
+
+;; Keybindings for AI under SPC a (for "ai")
 (map! :leader
-      :desc "Consult fd ><"
-      "SPC" #'consult-fd
-      :desc "Formatttting..."
-      "f s" #'+format/buffer)
+      :desc "AI" "a" nil  ; create the prefix
+      (:prefix ("a" . "ai")
+       :desc "Open AI chat"      "a" #'gptel
+       :desc "Send to AI"        "s" #'gptel-send
+       :desc "Select AI model"   "m" #'gptel-menu
+       :desc "Abort AI request"  "x" #'gptel-abort))
 
+;; ============================================================================
+;; GENERAL EDITOR SETTINGS
+;; ============================================================================
 
-;; Whenever you reconfigure a package, make sure to wrap your config in an
-;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
+;; Auto-save files when switching buffers or losing focus
+(setq auto-save-default t)
+
+;; Scroll smoothly instead of jumping half-page
+(setq scroll-margin 5
+      scroll-conservatively 101)
+
+;; Show matching parentheses instantly
+(setq show-paren-delay 0)
+
+;; Increase undo limit (default is quite low)
+(setq undo-limit 80000000
+      undo-strong-limit 120000000
+      undo-outer-limit 360000000)
+
+;; Which-key popup delay — shows available keys after pressing a prefix
+;; Lower = faster popup. Default is 1 second.
+(setq which-key-idle-delay 0.3)
+
+;; ============================================================================
+;; QUICK REFERENCE CARD
+;; ============================================================================
+;; SPC = leader key (the starting point for most commands)
+;; SPC SPC = find file in project (like Cmd+P)
+;; SPC .   = find file from current directory
+;; SPC ,   = switch buffer
+;; SPC /   = search in project (ripgrep)
+;; SPC :   = execute command (M-x)
 ;;
-;;   (after! PACKAGE
-;;     (setq x y))
+;; SPC f   = file commands (save, recent, etc.)
+;; SPC b   = buffer commands (kill, switch, etc.)
+;; SPC w   = window commands (split, close, move)
+;; SPC p   = project commands (switch project, etc.)
+;; SPC g   = git commands (magit, blame, etc.)
+;; SPC c   = code commands (LSP actions, format, etc.)
+;; SPC o   = open commands (vterm, treemacs, etc.)
+;; SPC h   = help commands (describe function, variable, key, etc.)
+;; SPC t   = toggle commands (line numbers, theme, etc.)
+;; SPC a   = AI commands (gptel chat, send, model select)
 ;;
-;; The exceptions to this rule:
-;;
-;;   - Setting file/directory variables (like `org-directory')
-;;   - Setting variables which explicitly tell you to set them before their
-;;     package is loaded (see 'C-h v VARIABLE' to look up their documentation).
-;;   - Setting doom variables (which start with 'doom-' or '+').
-;;
-;; Here are some additional functions/macros that will help you configure Doom.
-;;
-;; - `load!' for loading external *.el files relative to this one
-;; - `use-package!' for configuring packages
-;; - `after!' for running code after a package has loaded
-;; - `add-load-path!' for adding directories to the `load-path', relative to
-;;   this file. Emacs searches the `load-path' when you load packages with
-;;   `require' or `use-package'.
-;; - `map!' for binding new keys
-;;
-;; To get information about any of these functions/macros, move the cursor over
-;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
-;; This will open documentation for it, including demos of how they are used.
-;; Alternatively, use `C-h o' to look up a symbol (functions, variables, faces,
-;; etc).
-;;
-;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
-;; they are implemented.
+;; In evil normal mode:
+;;   gd = go to definition
+;;   gr = find references
+;;   K  = hover docs
+;;   gcc = comment/uncomment line
+;;   gc = comment/uncomment selection (in visual mode)
