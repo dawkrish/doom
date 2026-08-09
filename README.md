@@ -2,18 +2,6 @@
 
 My personal Doom Emacs setup. Catppuccin macchiato theme, evil mode, eglot LSP, and a bunch of languages I use day to day.
 
-## Before you start
-
-If you have an existing vim/neovim config, back it up:
-
-```bash
-mv ~/.vimrc ~/.vimrc.bak
-mv ~/.vim ~/.vim.bak
-mv ~/.config/nvim ~/.config/nvim.bak
-```
-
-Doom uses evil mode (vim keybindings) so your muscle memory carries over. But the config format is completely different, so don't try to port your old vimrc line by line. Start fresh, add things as you miss them.
-
 ## Prerequisites
 
 - Emacs 30+ (macOS: `brew install --cask emacs` or emacs-plus)
@@ -27,9 +15,10 @@ Doom uses evil mode (vim keybindings) so your muscle memory carries over. But th
 ```bash
 git clone https://github.com/dawkrish/doom ~/.config/doom
 doom sync
+doom doctor
 ```
 
-Restart Emacs.
+Restart Emacs. Run `doom doctor` to check for missing dependencies and fix them.
 
 ## What's in here
 
